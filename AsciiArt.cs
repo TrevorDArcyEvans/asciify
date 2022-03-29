@@ -57,7 +57,6 @@ namespace StaticDust
     /// <returns></returns>
     public static string ConvertImage(
       Image<Rgba32> img, 
-      StreamWriter fileStream,
       int imgBlockSize,
       int fontSize,
       bool quick,

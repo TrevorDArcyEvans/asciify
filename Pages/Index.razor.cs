@@ -20,7 +20,7 @@ public sealed partial class Index
   };
   private string _rendered { get; set; }
 
-  private void CreateAsciiArt(Image<Rgba32> img, AsciiPageSize selectedPageSize)
+  private string CreateAsciiArt(Image<Rgba32> img, AsciiPageSize selectedPageSize)
   {
     // calculate block size
     const int FudgeFactor = 5;
@@ -30,14 +30,7 @@ public sealed partial class Index
     blockSize = Math.Max(1, blockSize);
     
     // convert to ascii
-    var filename = Path.GetTempPath();
-    using (var fs = new StreamWriter(filename))
-    {
-      AsciiArt.ConvertImage(img, fs, blockSize, 5, false, true);
-    }
-
-    // save to file
-    //File.WriteAllText(filename, browserStr);
+    return AsciiArt.ConvertImage(img, blockSize, 5, false, true);
   }
 
   private async Task LoadFile(InputFileChangeEventArgs e)
@@ -56,6 +49,7 @@ public sealed partial class Index
 
     ms.Seek(0, SeekOrigin.Begin);
     var img = Image.Load<Rgba32>(ms);
-    _rendered = $"<b>{e.File.Name}</b> --> {img.Width} x {img.Height}";
+    var html = CreateAsciiArt(img, _sizes[0]);
+    _rendered = html;
   }
 }
