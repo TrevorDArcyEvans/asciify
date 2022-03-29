@@ -76,184 +76,175 @@ namespace StaticDust
       var context = new CGBitmapContext(buffer, (int)img.Width, (int)img.Height, 8, 4 * (int)img.Width, colorSpace, CGImageAlphaInfo.NoneSkipFirst);
 
 
-      try
+      context.InterpolationQuality = CGInterpolationQuality.None;
+      context.DrawImage(new Rectangle(0, 0, (int)img.Width, (int)img.Height), img.CGImage);
+
+      var bufPtr = (byte*)((void*)buffer);
+
+      var pixWidth = imgBlockSize;
+      var pixHeight = pixWidth * 2;
+      var pixSeg = pixWidth * pixHeight;
+      var numHeightIter = img.Height / pixHeight;
+      var numWidthIter = img.Width / pixWidth;
+      var percentIter = (int)(numHeightIter * numWidthIter / 100) + 1;
+      var currIter = 0;
+
+
+      for (var h = 0; h < numHeightIter; h++, currIter++)
       {
-        context.InterpolationQuality = CGInterpolationQuality.None;
-        context.DrawImage(new Rectangle(0, 0, (int)img.Width, (int)img.Height), img.CGImage);
+        // segment height
+        var startY = (h * pixHeight);
 
-        unsafe
+        // segment width
+        for (var w = 0; w < numWidthIter; w++, currIter++)
         {
-          var bufPtr = (byte*)((void*)buffer);
+          var startX = (w * pixWidth);
+          var allBrightness = 0f;
+          var allAlpha = 0f;
+          var allRed = 0f;
+          var allGreen = 0f;
+          var allBlue = 0f;
 
-          var pixWidth = imgBlockSize;
-          var pixHeight = pixWidth * 2;
-          var pixSeg = pixWidth * pixHeight;
-          var numHeightIter = img.Height / pixHeight;
-          var numWidthIter = img.Width / pixWidth;
-          var percentIter = (int)(numHeightIter * numWidthIter / 100) + 1;
-          var currIter = 0;
-
-
-          for (var h = 0; h < numHeightIter; h++, currIter++)
+          if (quick)
           {
-            // segment height
-            var startY = (h * pixHeight);
-
-            // segment width
-            for (var w = 0; w < numWidthIter; w++, currIter++)
+            // each pix of this segment
+            for (var y = 0; y < pixWidth; y++)
             {
-              var startX = (w * pixWidth);
-              var allBrightness = 0f;
-              var allAlpha = 0f;
-              var allRed = 0f;
-              var allGreen = 0f;
-              var allBlue = 0f;
-
-              if (quick)
+              var cY = y + startY;
+              var cX = 0 + startX;
+              try
               {
-                // each pix of this segment
-                for (var y = 0; y < pixWidth; y++)
+                if (cX < img.Width)
                 {
-                  var cY = y + startY;
-                  var cX = 0 + startX;
-                  try
-                  {
-                    if (cX < img.Width)
-                    {
-                      int offset = (int)(4 * (img.Width * cY + cX));
-                      float alpha = (float)bufPtr[offset] / 255f;
-                      float red = (float)bufPtr[offset + 1] / 255f;
-                      float green = (float)bufPtr[offset + 2] / 255f;
-                      float blue = (float)bufPtr[offset + 3] / 255f;
+                  int offset = (int)(4 * (img.Width * cY + cX));
+                  float alpha = (float)bufPtr[offset] / 255f;
+                  float red = (float)bufPtr[offset + 1] / 255f;
+                  float green = (float)bufPtr[offset + 2] / 255f;
+                  float blue = (float)bufPtr[offset + 3] / 255f;
 
-                      allAlpha += alpha;
-                      allRed += red;
-                      allGreen += green;
-                      allBlue += blue;             
-                      allBrightness += RGBtoBrightness(red, green, blue);
-                    }
-                  }
-                  catch
-                  {
-                    allBrightness += 0.5f;
-                  }
+                  allAlpha += alpha;
+                  allRed += red;
+                  allGreen += green;
+                  allBlue += blue;             
+                  allBrightness += RGBtoBrightness(red, green, blue);
                 }
               }
-              else
+              catch
               {
-                // each pix of this segment
-                for (var y = 0; y < pixWidth; y++)
-                {
-                  for (var x = 0; x < pixHeight; x++)
-                  {
-                    var cY = y + startY;
-                    var cX = x + startX;
-                    try
-                    {
-                      if (cX < img.Width)
-                      {
-                        int offset = (int)(4 * (img.Width * cY + cX));
-                        float alpha = (float)bufPtr[offset] / 255f;
-                        float red = (float)bufPtr[offset + 1] / 255f;
-                        float green = (float)bufPtr[offset + 2] / 255f;
-                        float blue = (float)bufPtr[offset + 3] / 255f;
-
-                        allAlpha += alpha;
-                        allRed += red;
-                        allGreen += green;
-                        allBlue += blue;
-                        allBrightness += RGBtoBrightness(red, green, blue);
-                      }
-                    }
-                    catch
-                    {
-                      allBrightness += 0.5f;
-                    }
-                  }
-                }
-              }
-
-              var avgBrt = (allBrightness / pixSeg) * 100f;
-              string asciiChar;
-              if (avgBrt < 10)
-              {
-                asciiChar = "#";
-              }
-              else if (avgBrt < 17)
-              {
-                asciiChar = "@";
-              }
-              else if (avgBrt < 24)
-              {
-                asciiChar = "&";
-              }
-              else if (avgBrt < 31)
-              {
-                asciiChar = "$";
-              }
-              else if (avgBrt < 38)
-              {
-                asciiChar = "%";
-              }
-              else if (avgBrt < 45)
-              {
-                asciiChar = "|";
-              }
-              else if (avgBrt < 52)
-              {
-                asciiChar = "!";
-              }
-              else if (avgBrt < 59)
-              {
-                asciiChar = ";";
-              }
-              else if (avgBrt < 66)
-              {
-                asciiChar = ":";
-              }
-              else if (avgBrt < 73)
-              {
-                asciiChar = "'";
-              }
-              else if (avgBrt < 80)
-              {
-                asciiChar = "`";
-              }
-              else if (avgBrt < 87)
-              {
-                asciiChar = ".";
-              }
-              else
-              {
-                asciiChar = " ";
-              }
-
-              if (colour)
-              {
-                const string ColourCharElement = "<code style=\"color:{0}\">{1}</code>";
-                
-                var avgRed = (allRed / pixSeg);
-                var avgGreen = (allGreen / pixSeg);
-                var avgBlue = (allBlue / pixSeg);                
-                var clrHex = string.Format("#{0:x}{1:x}{2:x}", (int)(avgRed * 255), (int)(avgGreen * 255), (int)(avgBlue * 255));
-                var asciiStr = string.Format(ColourCharElement, clrHex, asciiChar);
-
-                fileStream.Write(asciiStr);
-              }
-              else
-              {
-                fileStream.Write(asciiChar);
+                allBrightness += 0.5f;
               }
             }
-            fileStream.Write("\n");
+          }
+          else
+          {
+            // each pix of this segment
+            for (var y = 0; y < pixWidth; y++)
+            {
+              for (var x = 0; x < pixHeight; x++)
+              {
+                var cY = y + startY;
+                var cX = x + startX;
+                try
+                {
+                  if (cX < img.Width)
+                  {
+                    int offset = (int)(4 * (img.Width * cY + cX));
+                    float alpha = (float)bufPtr[offset] / 255f;
+                    float red = (float)bufPtr[offset + 1] / 255f;
+                    float green = (float)bufPtr[offset + 2] / 255f;
+                    float blue = (float)bufPtr[offset + 3] / 255f;
+
+                    allAlpha += alpha;
+                    allRed += red;
+                    allGreen += green;
+                    allBlue += blue;
+                    allBrightness += RGBtoBrightness(red, green, blue);
+                  }
+                }
+                catch
+                {
+                  allBrightness += 0.5f;
+                }
+              }
+            }
+          }
+
+          var avgBrt = (allBrightness / pixSeg) * 100f;
+          string asciiChar;
+          if (avgBrt < 10)
+          {
+            asciiChar = "#";
+          }
+          else if (avgBrt < 17)
+          {
+            asciiChar = "@";
+          }
+          else if (avgBrt < 24)
+          {
+            asciiChar = "&";
+          }
+          else if (avgBrt < 31)
+          {
+            asciiChar = "$";
+          }
+          else if (avgBrt < 38)
+          {
+            asciiChar = "%";
+          }
+          else if (avgBrt < 45)
+          {
+            asciiChar = "|";
+          }
+          else if (avgBrt < 52)
+          {
+            asciiChar = "!";
+          }
+          else if (avgBrt < 59)
+          {
+            asciiChar = ";";
+          }
+          else if (avgBrt < 66)
+          {
+            asciiChar = ":";
+          }
+          else if (avgBrt < 73)
+          {
+            asciiChar = "'";
+          }
+          else if (avgBrt < 80)
+          {
+            asciiChar = "`";
+          }
+          else if (avgBrt < 87)
+          {
+            asciiChar = ".";
+          }
+          else
+          {
+            asciiChar = " ";
+          }
+
+          if (colour)
+          {
+            const string ColourCharElement = "<code style=\"color:{0}\">{1}</code>";
+            
+            var avgRed = (allRed / pixSeg);
+            var avgGreen = (allGreen / pixSeg);
+            var avgBlue = (allBlue / pixSeg);                
+            var clrHex = string.Format("#{0:x}{1:x}{2:x}", (int)(avgRed * 255), (int)(avgGreen * 255), (int)(avgBlue * 255));
+            var asciiStr = string.Format(ColourCharElement, clrHex, asciiChar);
+
+            sb.Append(asciiStr);
+          }
+          else
+          {
+            sb.Append(asciiChar);
           }
         }
+        sb.Append(Environment.NewLine);
       }
-      finally
-      {
-        context.Dispose();
-        colorSpace.Dispose();
-      }
+#else
+      sb.Append($"{img.Width} x {img.Height}");
 #endif
 
       const string WebPage3 =
