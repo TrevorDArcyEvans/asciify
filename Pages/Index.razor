@@ -1,7 +1,7 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<PageTitle>asciify</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+<InputFile OnChange="@LoadFile" />
+<hr/>
+@((MarkupString)_rendered)
