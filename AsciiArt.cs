@@ -30,6 +30,65 @@ namespace StaticDust
       return (red + red + blue + green + green + green) / 6;
     }
 
+    private static string BrightnessToChar(float avgBrt)
+    {
+      string asciiChar;
+      if (avgBrt < 10)
+      {
+        asciiChar = "#";
+      }
+      else if (avgBrt < 17)
+      {
+        asciiChar = "@";
+      }
+      else if (avgBrt < 24)
+      {
+        asciiChar = "&";
+      }
+      else if (avgBrt < 31)
+      {
+        asciiChar = "$";
+      }
+      else if (avgBrt < 38)
+      {
+        asciiChar = "%";
+      }
+      else if (avgBrt < 45)
+      {
+        asciiChar = "|";
+      }
+      else if (avgBrt < 52)
+      {
+        asciiChar = "!";
+      }
+      else if (avgBrt < 59)
+      {
+        asciiChar = ";";
+      }
+      else if (avgBrt < 66)
+      {
+        asciiChar = ":";
+      }
+      else if (avgBrt < 73)
+      {
+        asciiChar = "'";
+      }
+      else if (avgBrt < 80)
+      {
+        asciiChar = "`";
+      }
+      else if (avgBrt < 87)
+      {
+        asciiChar = ".";
+      }
+      else
+      {
+        asciiChar = " ";
+      }
+
+      return asciiChar;
+    }
+
     /// <summary>
     /// converts an image to an ascii web page
     /// </summary>
@@ -71,15 +130,7 @@ namespace StaticDust
       sb.Append(WebPage1);
 
 #if false
-      var buffer = Marshal.AllocHGlobal((int)(img.Width * img.Height * 4));
-      var colorSpace = CGColorSpace.CreateDeviceRGB();
-      var context = new CGBitmapContext(buffer, (int)img.Width, (int)img.Height, 8, 4 * (int)img.Width, colorSpace, CGImageAlphaInfo.NoneSkipFirst);
-
-
-      context.InterpolationQuality = CGInterpolationQuality.None;
-      context.DrawImage(new Rectangle(0, 0, (int)img.Width, (int)img.Height), img.CGImage);
-
-      var bufPtr = (byte*)((void*)buffer);
+      var bufPtr = new byte[img.Width * img.Height * 4];
 
       var pixWidth = imgBlockSize;
       var pixHeight = pixWidth * 2;
@@ -170,59 +221,7 @@ namespace StaticDust
           }
 
           var avgBrt = (allBrightness / pixSeg) * 100f;
-          string asciiChar;
-          if (avgBrt < 10)
-          {
-            asciiChar = "#";
-          }
-          else if (avgBrt < 17)
-          {
-            asciiChar = "@";
-          }
-          else if (avgBrt < 24)
-          {
-            asciiChar = "&";
-          }
-          else if (avgBrt < 31)
-          {
-            asciiChar = "$";
-          }
-          else if (avgBrt < 38)
-          {
-            asciiChar = "%";
-          }
-          else if (avgBrt < 45)
-          {
-            asciiChar = "|";
-          }
-          else if (avgBrt < 52)
-          {
-            asciiChar = "!";
-          }
-          else if (avgBrt < 59)
-          {
-            asciiChar = ";";
-          }
-          else if (avgBrt < 66)
-          {
-            asciiChar = ":";
-          }
-          else if (avgBrt < 73)
-          {
-            asciiChar = "'";
-          }
-          else if (avgBrt < 80)
-          {
-            asciiChar = "`";
-          }
-          else if (avgBrt < 87)
-          {
-            asciiChar = ".";
-          }
-          else
-          {
-            asciiChar = " ";
-          }
+          var asciiChar = BrightnessToChar(avgBrt);
 
           if (colour)
           {
