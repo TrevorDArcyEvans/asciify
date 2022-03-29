@@ -2,6 +2,6 @@
 
 <PageTitle>asciify</PageTitle>
 
-<InputFile OnChange="@LoadFile" />
+<InputFile OnChange="@(async (e) => await LoadFile(e))" />
 <hr/>
 @((MarkupString)_rendered)

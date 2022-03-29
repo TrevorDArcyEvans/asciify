@@ -1,5 +1,6 @@
 namespace asciify.Pages;
 
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Forms;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -32,15 +33,21 @@ public sealed partial class Index
     var filename = Path.GetTempPath();
     using (var fs = new StreamWriter(filename))
     {
-      AsciiArt.ConvertImage(img, fs, (int)blockSize, 5, false, true);
+      AsciiArt.ConvertImage(img, fs, blockSize, 5, false, true);
     }
 
     // save to file
     //File.WriteAllText(filename, browserStr);
   }
 
-  private void LoadFile(InputFileChangeEventArgs e)
+  private async Task LoadFile(InputFileChangeEventArgs e)
   {
-    _rendered = $"<b>{e.File.Name}</b>";
+    var data = e.File.OpenReadStream();
+    var ms = new MemoryStream();
+    await data.CopyToAsync(ms);
+    ms.Seek(0, SeekOrigin.Begin);
+
+    var img = Image.Load<Rgba32>(ms);
+    _rendered = $"<b>{e.File.Name}</b> --> {img.Width} x {img.Height}";
   }
 }

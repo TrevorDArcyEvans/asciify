@@ -14,6 +14,7 @@ For more information email: info@lennybacon.com
 
 namespace StaticDust
 {
+  using System.Text;
   using SixLabors.ImageSharp;
   using SixLabors.ImageSharp.PixelFormats;
 
@@ -54,7 +55,7 @@ namespace StaticDust
     /// <remarks>pass in null to not monitor progress</remarks>
     /// </param>
     /// <returns></returns>
-    public static void ConvertImage(
+    public static string ConvertImage(
       Image<Rgba32> img, 
       StreamWriter fileStream,
       int imgBlockSize,
@@ -62,12 +63,13 @@ namespace StaticDust
       bool quick,
       bool colour)
     {
-      const string WebPage1 =
+      var sb = new StringBuilder();
+      var WebPage1 =
         "<html>" +
           "<body>" +
           "<pre>" +
-          "<span style=\"font-size: {0}px;font-family: monospace;\">";
-      fileStream.Write(WebPage1, fontSize);
+          $"<span style=\"font-size: {fontSize}px;font-family: monospace;\">";
+      sb.Append(WebPage1);
 
 #if false
       var buffer = Marshal.AllocHGlobal((int)(img.Width * img.Height * 4));
@@ -261,7 +263,9 @@ namespace StaticDust
           "</body>" +
         "</html>";
 
-      fileStream.Write(WebPage3);
+      sb.Append(WebPage3);
+
+      return sb.ToString();
     }
   }
 }
