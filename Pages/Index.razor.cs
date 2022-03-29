@@ -47,6 +47,14 @@ public sealed partial class Index
     await data.CopyToAsync(ms);
     ms.Seek(0, SeekOrigin.Begin);
 
+    var info = await Image.IdentifyAsync(ms);
+    if (info is null)
+    {
+      _rendered = $"<b>{e.File.Name}</b> --> unknown format";
+      return;
+    }
+
+    ms.Seek(0, SeekOrigin.Begin);
     var img = Image.Load<Rgba32>(ms);
     _rendered = $"<b>{e.File.Name}</b> --> {img.Width} x {img.Height}";
   }
