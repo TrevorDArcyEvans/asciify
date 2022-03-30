@@ -87,13 +87,8 @@ public static class AsciiArt
       $"<span style=\"font-size: {fontSize}px;font-family: monospace;\">";
     sb.Append(WebPage1);
 
-    var bufPtr = new byte[img.Width * img.Height * 4];
 
-    var pixWidth = imgBlockSize;
-    var pixHeight = pixWidth * 2;
-    var pixSeg = pixWidth * pixHeight;
-    var numHeightIter = img.Height / pixHeight;
-    var numWidthIter = img.Width / pixWidth;
+    var bufPtr = new Rgba32[img.Width * img.Height];
 
     img.ProcessPixelRows(acc =>
     {
@@ -103,10 +98,17 @@ public static class AsciiArt
         for (var x = 0; x < pxRow.Length - 1; x++)
         {
           ref var px = ref pxRow[x];
+          bufPtr[y * img.Width + x] = px;
         }
       }
     });
 
+
+    var pixWidth = imgBlockSize;
+    var pixHeight = pixWidth * 2;
+    var pixSeg = pixWidth * pixHeight;
+    var numHeightIter = img.Height / pixHeight;
+    var numWidthIter = img.Width / pixWidth;
 
     for (var h = 0; h < numHeightIter; h++)
     {
@@ -134,11 +136,11 @@ public static class AsciiArt
             {
               if (cX < img.Width)
               {
-                var offset = 4 * (img.Width * cY + cX);
-                var alpha = bufPtr[offset] / 255f;
-                var red = bufPtr[offset + 1] / 255f;
-                var green = bufPtr[offset + 2] / 255f;
-                var blue = bufPtr[offset + 3] / 255f;
+                var offset = img.Width * cY + cX;
+                var alpha = bufPtr[offset].A / 255f;
+                var red = bufPtr[offset].R / 255f;
+                var green = bufPtr[offset].G / 255f;
+                var blue = bufPtr[offset].B / 255f;
 
                 allAlpha += alpha;
                 allRed += red;
@@ -166,11 +168,11 @@ public static class AsciiArt
               {
                 if (cX < img.Width)
                 {
-                  var offset = 4 * (img.Width * cY + cX);
-                  var alpha = bufPtr[offset] / 255f;
-                  var red = bufPtr[offset + 1] / 255f;
-                  var green = bufPtr[offset + 2] / 255f;
-                  var blue = bufPtr[offset + 3] / 255f;
+                  var offset = img.Width * cY + cX;
+                  var alpha = bufPtr[offset].A / 255f;
+                  var red = bufPtr[offset].R / 255f;
+                  var green = bufPtr[offset].G / 255f;
+                  var blue = bufPtr[offset].B / 255f;
 
                   allAlpha += alpha;
                   allRed += red;
