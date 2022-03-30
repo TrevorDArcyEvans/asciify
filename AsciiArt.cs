@@ -32,59 +32,22 @@ public static class AsciiArt
 
   private static string BrightnessToChar(float avgBrt)
   {
-    string asciiChar;
-    if (avgBrt < 10)
+    var asciiChar = avgBrt switch
     {
-      asciiChar = "#";
-    }
-    else if (avgBrt < 17)
-    {
-      asciiChar = "@";
-    }
-    else if (avgBrt < 24)
-    {
-      asciiChar = "&";
-    }
-    else if (avgBrt < 31)
-    {
-      asciiChar = "$";
-    }
-    else if (avgBrt < 38)
-    {
-      asciiChar = "%";
-    }
-    else if (avgBrt < 45)
-    {
-      asciiChar = "|";
-    }
-    else if (avgBrt < 52)
-    {
-      asciiChar = "!";
-    }
-    else if (avgBrt < 59)
-    {
-      asciiChar = ";";
-    }
-    else if (avgBrt < 66)
-    {
-      asciiChar = ":";
-    }
-    else if (avgBrt < 73)
-    {
-      asciiChar = "'";
-    }
-    else if (avgBrt < 80)
-    {
-      asciiChar = "`";
-    }
-    else if (avgBrt < 87)
-    {
-      asciiChar = ".";
-    }
-    else
-    {
-      asciiChar = " ";
-    }
+      < 10 => "#",
+      < 17 => "@",
+      < 24 => "&",
+      < 31 => "$",
+      < 38 => "%",
+      < 45 => "|",
+      < 52 => "!",
+      < 59 => ";",
+      < 66 => ":",
+      < 73 => "'",
+      < 80 => "`",
+      < 87 => ".",
+      _ => " "
+    };
 
     return asciiChar;
   }
@@ -93,7 +56,6 @@ public static class AsciiArt
   /// converts an image to an ascii web page
   /// </summary>
   /// <param name="img">image to convert</param>
-  /// <param name="fileStream">opened file to write HTML</param>
   /// <param name="imgBlockSize">
   /// used to determine the width in pixels of one ascii character
   /// which is then used to determine the block size in pixels
@@ -109,11 +71,7 @@ public static class AsciiArt
   /// </remarks>
   /// </param>
   /// <param name="colour">true to generate a colour ascii image</param>
-  /// <param name="monitor">
-  /// optional callback to monitor progress, <seealso cref="IAsciiArtProgress"/>
-  /// <remarks>pass in null to not monitor progress</remarks>
-  /// </param>
-  /// <returns></returns>
+  /// <returns>HTML string containing ascii representation of image</returns>
   public static string ConvertImage(
     Image<Rgba32> img, 
     int imgBlockSize,
