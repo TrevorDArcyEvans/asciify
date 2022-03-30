@@ -31,7 +31,7 @@ internal static class Program
     var blockHeight = img.Height / selectedPageSize.Height;
     var blockSize = FudgeFactor * Math.Max(blockWidth, blockHeight);
     blockSize = Math.Max(1, blockSize);
-    
+
     // convert to ascii
     return AsciiArt.ConvertImage(img, blockSize, 5, false, true);
   }
