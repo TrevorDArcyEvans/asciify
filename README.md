@@ -5,10 +5,14 @@ using nothing but letters and numbers.  Turn the clock back and view your pictur
 
 A simple, streamlined, user interface lets you choose an image and select an output size.
 
+![](01-screenshot-cli.png)
+![](02-screenshot-web.png)
+
 _asciify_ features:
 * uncluttered, intuitive interface
 * color ASCII, HTML output
 * choice of output sizes
+* command line interface
 
 Please note that _asciify_ does a LOT of computing, so it will take a while on large images
 but the results are worth the wait.
