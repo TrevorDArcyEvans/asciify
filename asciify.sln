@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "asciify.ui.web", "asciify.u
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "asciify.core", "asciify.core\asciify.core.csproj", "{F40D9B0F-7C84-4A5E-960C-FC1764EC1A28}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "asciify.ui.cli", "asciify.ui.cli\asciify.ui.cli.csproj", "{8877722A-3500-4E82-8158-7D21DCA0551F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{F40D9B0F-7C84-4A5E-960C-FC1764EC1A28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F40D9B0F-7C84-4A5E-960C-FC1764EC1A28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F40D9B0F-7C84-4A5E-960C-FC1764EC1A28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8877722A-3500-4E82-8158-7D21DCA0551F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8877722A-3500-4E82-8158-7D21DCA0551F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8877722A-3500-4E82-8158-7D21DCA0551F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8877722A-3500-4E82-8158-7D21DCA0551F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
