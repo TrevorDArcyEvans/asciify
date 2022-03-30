@@ -2,6 +2,14 @@
 
 <PageTitle>asciify</PageTitle>
 
-<InputFile OnChange="@(async (e) => await LoadFile(e))" />
+<InputFile OnChange="@(async (e) => await LoadFile(e))"/>
+<p/>
+<label for="sizeSelector">Size:</label>
+<select @bind="selectedSize" id="sizeSelector">
+  @foreach (var size in _sizes)
+  {
+    <option value="@size.Name">@size.Name</option>
+  }
+</select>
 <hr/>
 @((MarkupString)_rendered)
