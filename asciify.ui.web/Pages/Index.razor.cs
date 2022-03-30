@@ -1,4 +1,6 @@
 using asciify.core;
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace asciify.ui.web.Pages;
 
@@ -12,6 +14,9 @@ public sealed partial class Index
 {
   private string selectedSize { get; set; }
   private string _rendered { get; set; }
+
+  [Inject]
+  private IJSRuntime JSRuntime { get; set; }
 
   protected override void OnInitialized()
   {
@@ -27,7 +32,7 @@ public sealed partial class Index
     var blockHeight = img.Height / selectedPageSize.Height;
     var blockSize = FudgeFactor * Math.Max(blockWidth, blockHeight);
     blockSize = Math.Max(1, blockSize);
-    
+
     // convert to ascii
     return AsciiArt.ConvertImage(img, blockSize, 5, false, true);
   }
@@ -51,5 +56,12 @@ public sealed partial class Index
     var size = AsciiPageSize.DefaultSizes.Single(x => x.Name == selectedSize);
     var html = CreateAsciiArt(img, size);
     _rendered = html;
+  }
+
+  private async Task DownloadRender()
+  {
+    // Generate a text file
+    var data = System.Text.Encoding.UTF8.GetBytes(_rendered);
+    await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "index.html", "text/plain", data);
   }
 }
