@@ -10,22 +10,12 @@ using StaticDust;
 
 public sealed partial class Index
 {
-  private readonly List<AsciiPageSize> _sizes = new()
-  {
-    new AsciiPageSize("micro", 320, 240),
-    new AsciiPageSize("tiny", 480, 360),
-    new AsciiPageSize("small", 640, 480),
-    new AsciiPageSize("medium", 800, 600),
-    new AsciiPageSize("large", 1024, 768),
-    new AsciiPageSize("extra large", 1280, 1024),
-    new AsciiPageSize("super large", 1600, 1200)
-  };
   private string selectedSize { get; set; }
   private string _rendered { get; set; }
 
   protected override void OnInitialized()
   {
-    selectedSize = _sizes[0].Name;
+    selectedSize = AsciiPageSize.DefaultSizes[0].Name;
     base.OnInitialized();
   }
 
@@ -58,7 +48,7 @@ public sealed partial class Index
 
     ms.Seek(0, SeekOrigin.Begin);
     var img = Image.Load<Rgba32>(ms);
-    var size = _sizes.Single(x => x.Name == selectedSize);
+    var size = AsciiPageSize.DefaultSizes.Single(x => x.Name == selectedSize);
     var html = CreateAsciiArt(img, size);
     _rendered = html;
   }
