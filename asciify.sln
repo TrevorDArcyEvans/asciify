@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "asciify", "asciify.csproj", "{599110BE-C514-4C13-B5DE-4F6A16561071}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "asciify.ui.web", "asciify.ui.web\asciify.ui.web.csproj", "{599110BE-C514-4C13-B5DE-4F6A16561071}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "asciify.core", "asciify.core\asciify.core.csproj", "{F40D9B0F-7C84-4A5E-960C-FC1764EC1A28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +20,9 @@ Global
 		{599110BE-C514-4C13-B5DE-4F6A16561071}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{599110BE-C514-4C13-B5DE-4F6A16561071}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{599110BE-C514-4C13-B5DE-4F6A16561071}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F40D9B0F-7C84-4A5E-960C-FC1764EC1A28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F40D9B0F-7C84-4A5E-960C-FC1764EC1A28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F40D9B0F-7C84-4A5E-960C-FC1764EC1A28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F40D9B0F-7C84-4A5E-960C-FC1764EC1A28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

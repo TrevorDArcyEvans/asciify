@@ -73,7 +73,7 @@ public static class AsciiArt
   /// <param name="colour">true to generate a colour ascii image</param>
   /// <returns>HTML string containing ascii representation of image</returns>
   public static string ConvertImage(
-    Image<Rgba32> img, 
+    Image<Rgba32> img,
     int imgBlockSize,
     int fontSize,
     bool quick,
@@ -87,7 +87,6 @@ public static class AsciiArt
       $"<span style=\"font-size: {fontSize}px;font-family: monospace;\">";
     sb.Append(WebPage1);
 
-#if true
     var bufPtr = new byte[img.Width * img.Height * 4];
 
     var pixWidth = imgBlockSize;
@@ -96,16 +95,28 @@ public static class AsciiArt
     var numHeightIter = img.Height / pixHeight;
     var numWidthIter = img.Width / pixWidth;
 
+    img.ProcessPixelRows(acc =>
+    {
+      for (var y = 0; y < acc.Height; y++)
+      {
+        var pxRow = acc.GetRowSpan(y);
+        for (var x = 0; x < pxRow.Length - 1; x++)
+        {
+          ref var px = ref pxRow[x];
+        }
+      }
+    });
+
 
     for (var h = 0; h < numHeightIter; h++)
     {
       // segment height
-      var startY = (h * pixHeight);
+      var startY = h * pixHeight;
 
       // segment width
       for (var w = 0; w < numWidthIter; w++)
       {
-        var startX = (w * pixWidth);
+        var startX = w * pixWidth;
         var allBrightness = 0f;
         var allAlpha = 0f;
         var allRed = 0f;
@@ -132,7 +143,7 @@ public static class AsciiArt
                 allAlpha += alpha;
                 allRed += red;
                 allGreen += green;
-                allBlue += blue;             
+                allBlue += blue;
                 allBrightness += RGBtoBrightness(red, green, blue);
               }
             }
@@ -176,16 +187,16 @@ public static class AsciiArt
           }
         }
 
-        var avgBrt = (allBrightness / pixSeg) * 100f;
+        var avgBrt = allBrightness / pixSeg * 100f;
         var asciiChar = BrightnessToChar(avgBrt);
 
         if (colour)
         {
           const string ColourCharElement = "<code style=\"color:{0}\">{1}</code>";
-            
-          var avgRed = (allRed / pixSeg);
-          var avgGreen = (allGreen / pixSeg);
-          var avgBlue = (allBlue / pixSeg);                
+
+          var avgRed = allRed / pixSeg;
+          var avgGreen = allGreen / pixSeg;
+          var avgBlue = allBlue / pixSeg;
           var clrHex = $"#{(int)(avgRed * 255):x}{(int)(avgGreen * 255):x}{(int)(avgBlue * 255):x}";
           var asciiStr = string.Format(ColourCharElement, clrHex, asciiChar);
 
@@ -196,11 +207,9 @@ public static class AsciiArt
           sb.Append(asciiChar);
         }
       }
+
       sb.Append(Environment.NewLine);
     }
-#else
-      sb.Append($"{img.Width} x {img.Height}");
-#endif
 
     const string WebPage3 =
       "</span>" +

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using asciify;
+using asciify.ui.web;
 
 #if DEBUG
 // Allow some time for debugger to attach to Blazor framework debugging proxy
