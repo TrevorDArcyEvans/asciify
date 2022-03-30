@@ -12,6 +12,7 @@ _asciify_ features:
 * uncluttered, intuitive interface
 * color ASCII, HTML output
 * choice of output sizes
+* download output
 * command line interface
 
 Please note that _asciify_ does a LOT of computing, so it will take a while on large images
