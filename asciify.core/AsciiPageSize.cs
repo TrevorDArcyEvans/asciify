@@ -1,4 +1,4 @@
-namespace asciify;
+namespace asciify.core;
 
 public class AsciiPageSize
 {
