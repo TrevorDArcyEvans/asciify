@@ -12,11 +12,12 @@ using StaticDust;
 
 public sealed partial class Index
 {
-  private string selectedSize { get; set; }
-  private string _rendered { get; set; }
-
   [Inject]
   private IJSRuntime JSRuntime { get; set; }
+
+  private string selectedSize { get; set; }
+  private string _rendered { get; set; }
+  private bool IsFinishedEmbed { get; set; }
 
   protected override void OnInitialized()
   {
@@ -39,6 +40,9 @@ public sealed partial class Index
 
   private async Task LoadFile(InputFileChangeEventArgs e)
   {
+    IsFinishedEmbed = false;
+    StateHasChanged();
+
     var data = e.File.OpenReadStream();
     var ms = new MemoryStream();
     await data.CopyToAsync(ms);
@@ -56,6 +60,9 @@ public sealed partial class Index
     var size = AsciiPageSize.DefaultSizes.Single(x => x.Name == selectedSize);
     var html = CreateAsciiArt(img, size);
     _rendered = html;
+
+    IsFinishedEmbed = true;
+    StateHasChanged();
   }
 
   private async Task DownloadRender()
