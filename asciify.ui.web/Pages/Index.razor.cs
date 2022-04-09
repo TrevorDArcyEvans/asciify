@@ -17,6 +17,7 @@ public sealed partial class Index
 
   private string selectedSize { get; set; }
   private string _rendered { get; set; }
+  private string _imgUrl { get; set; } = GetDefaultImageString();
   private bool IsFinishedEmbed { get; set; }
 
   protected override void OnInitialized()
@@ -41,6 +42,7 @@ public sealed partial class Index
   private async Task LoadFile(InputFileChangeEventArgs e)
   {
     IsFinishedEmbed = false;
+    _imgUrl = await GetImageString(e.File);
     StateHasChanged();
 
     var data = e.File.OpenReadStream();
@@ -63,6 +65,22 @@ public sealed partial class Index
 
     IsFinishedEmbed = true;
     StateHasChanged();
+  }
+
+  private static async Task<string> GetImageString(IBrowserFile file)
+  {
+    var buffers = new byte[file.Size];
+    await file.OpenReadStream().ReadAsync(buffers);
+    return $"data:{file.ContentType};base64,{Convert.ToBase64String(buffers)}";
+  }
+
+  private static string GetDefaultImageString(int width = 64, int height = 64)
+  {
+    var img = new Image<Rgba32>(Configuration.Default, width, height);
+    using var ms = new MemoryStream();
+    img.SaveAsPng(ms);
+    var bytes = ms.ToArray();
+    return $"data:img/png;base64,{Convert.ToBase64String(bytes)}";
   }
 
   private async Task DownloadRender()
