@@ -20,6 +20,9 @@ but the results are worth the wait.
 
 Remember - everything looks better in ASCII!
 
+# Demo
+[asciify](https://trevordarcyevans.github.io/asciify/)
+
 # Prerequisites
 * .NET Core 6
 
